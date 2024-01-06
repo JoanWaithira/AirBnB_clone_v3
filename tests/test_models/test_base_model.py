@@ -7,6 +7,7 @@ import pep8 as pycodestyle
 import time
 import unittest
 from unittest import mock
+from models.state import State
 BaseModel = models.base_model.BaseModel
 module_doc = models.base_model.__doc__
 
@@ -58,6 +59,7 @@ class TestBaseModelDocs(unittest.TestCase):
 
 class TestBaseModel(unittest.TestCase):
     """Test the BaseModel class"""
+
     def test_instantiation(self):
         """Test that object is correctly created"""
         inst = BaseModel()
@@ -158,3 +160,33 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(old_created_at, new_created_at)
         self.assertTrue(mock_storage.new.called)
         self.assertTrue(mock_storage.save.called)
+
+    # New tests begin here
+    def test_count(self):
+        """Tests if count returns accurate number of objects in storage"""
+        initial_count = models.storage.count()
+        new_instance = BaseModel()
+        new_instance.save()
+        updated_count = models.storage.count()
+        self.assertEqual(1, updated_count - initial_count)
+
+    def test_count_with_cls(self):
+        """Tests if count returns accurate number of states"""
+        initial_count = models.storage.count(State)
+        new_state = State()
+        new_state.save()
+        updated_count = models.storage.count(State)
+        self.assertEqual(1, updated_count - initial_count)
+
+    def test_get_object_saved(self):
+        """tests if get returns the correct object"""
+        new_state = State()
+        new_state.save()
+        tmp = models.storage.get(State, new_state.id)
+        self.assertIs(new_state, tmp)
+
+    def test_get_object_not_saved(self):
+        """tests if get returns the correct object"""
+        new_state = State()
+        tmp = models.storage.get(State, new_state.id)
+        self.assertEqual(tmp, None)
