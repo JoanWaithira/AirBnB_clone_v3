@@ -76,18 +76,22 @@ class DBStorage:
         self.__session.remove()
 
     def get(self, cls, id):
-        """
-        Returns the object based on the class and its ID,
-        or None if not found
-        """
-        if cls and cls in classes.values():
-            for obj in self.all(cls).values():
-                if obj.id == id:
-                    return obj
-        return None
+        """ A method to retrieve one object """
+        return self.__session.query(cls).get(id)
 
     def count(self, cls=None):
+<<<<<<< HEAD
         """counts objects in storage"""
         if cls and cls in classes.values():
             return len(set(obj.id for obj in self.all(cls).values()))
         return len(set(obj.id for obj in self.all().values()))
+=======
+        """  method to count the number of objects in storage """
+        if cls:
+            return self.__session.query(cls).count()
+        else:
+            count = 0
+            for class_ in Base.__subclasses__():
+                count += self.__session.query(class_).count()
+            return count
+>>>>>>> 04e0007084458584671d9b851be18b29acbeceb6
