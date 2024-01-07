@@ -31,4 +31,6 @@ def get_stats():
         'states': storage.count(State),
         'users': storage.count(User),
     }
-    return jsonify(stats)
+    response = make_response(jsonify(stats), 200)
+    response.headers['Content-Type'] = 'application/json'
+    return response
