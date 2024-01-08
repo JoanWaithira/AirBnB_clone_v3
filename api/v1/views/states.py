@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+""" The module that includes the City View """
 from flask import Flask, jsonify, abort, request
 from api.v1.views import app_views
 from models import storage
