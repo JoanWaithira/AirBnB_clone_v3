@@ -17,8 +17,8 @@ def get_state_cities(state_id):
     if request.method == 'GET':
         return jsonify([city.to_dict() for city in state.cities])
     if request.method == 'POST':
-        new_dict = request.get_json()
-        if not request.is_json:
+        new_dict = request.get_json(silent=True)
+        if not new_dict:
             abort(400, description="Not a JSON")
         if 'name' not in new_dict:
             abort(400, description="Missing name")
@@ -43,8 +43,8 @@ def get_city(city_id):
         storage.save()
         return jsonify({}), 200
     if request.method == 'PUT':
-        new_dict = request.get_json()
-        if not request.is_json:
+        new_dict = request.get_json(silent=True)
+        if not new_dict:
             abort(400, description="Not a JSON")
         for key, val in new_dict.items():
             if key != 'created_at' or key != 'updated_at' or key != 'id':
