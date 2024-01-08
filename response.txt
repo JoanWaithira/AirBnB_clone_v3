@@ -1,0 +1,12 @@
+HTTP/1.1 400 BAD REQUEST
+Server: Werkzeug/3.0.1 Python/3.11.6
+Date: Mon, 08 Jan 2024 03:08:18 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 196
+Connection: close
+
+<!doctype html>
+<html lang=en>
+<title>400 Bad Request</title>
+<h1>Bad Request</h1>
+<p>Failed to decode JSON object: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)</p>

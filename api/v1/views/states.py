@@ -18,18 +18,15 @@ def states():
         return jsonify(states_list), 200
 
     elif request.method == 'POST':
-        try:
-            if not request.is_json:
-                abort(400, description='Not a JSON')
-            new_dict = request.get_json()
-            if 'name' not in new_dict:
-                abort(400, description='Missing name')
-            new_state = State(**new_dict)
-            storage.new(new_state)
-            storage.save()
-            return jsonify(new_state.to_dict()), 201
-        except Exception as e:
-            pass
+        new_dict = request.get_json()
+        if not request.is_json:
+            abort(400, description='Not a JSON')
+        if 'name' not in new_dict:
+            abort(400, description='Missing name')
+        new_state = State(**new_dict)
+        storage.new(new_state)
+        storage.save()
+        return jsonify(new_state.to_dict()), 201
 
 
 @app_views.route("/states/<state_id>",
@@ -39,16 +36,16 @@ def get_state(state_id):
     """retrieves state by id"""
     obj = storage.get(State, str(state_id))
     if request.method == 'GET':
-        try:
+        if obj:
             return jsonify(obj.to_dict())
-        except Exception as e:
+        else:
             abort(404)
     elif request.method == 'DELETE':
-        try:
+        if obj:
             storage.delete(obj)
             storage.save()
             return jsonify({}), 200
-        except Exception as e:
+        else:
             abort(404)
     elif request.method == 'PUT':
         obj = storage.get(State, str(state_id))
