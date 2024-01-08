@@ -18,8 +18,8 @@ def states():
         return jsonify(states_list), 200
 
     elif request.method == 'POST':
-        new_dict = request.get_json()
-        if not request.is_json:
+        new_dict = request.get_json(silent=True)
+        if not new_dict:
             abort(400, description='Not a JSON')
         if 'name' not in new_dict:
             abort(400, description='Missing name')
@@ -35,24 +35,17 @@ def states():
 def get_state(state_id):
     """retrieves state by id"""
     obj = storage.get(State, str(state_id))
+    if not obj:
+        abort(404)
     if request.method == 'GET':
-        if obj:
-            return jsonify(obj.to_dict())
-        else:
-            abort(404)
+        return jsonify(obj.to_dict())
     elif request.method == 'DELETE':
-        if obj:
-            storage.delete(obj)
-            storage.save()
-            return jsonify({}), 200
-        else:
-            abort(404)
+        storage.delete(obj)
+        storage.save()
+        return jsonify({}), 200
     elif request.method == 'PUT':
-        obj = storage.get(State, str(state_id))
-        if not obj:
-            abort(404)
-        new_dict = request.get_json()
-        if not request.is_json:
+        new_dict = request.get_json(silent=True)
+        if not new_dict:
             abort(400, description='Not a JSON')
         for key, val in new_dict.items():
             if key != 'id' or key != 'created_at' or key != 'updated_at':
